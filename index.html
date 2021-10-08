@@ -1,0 +1,234 @@
+<html>
+
+<head>
+<style type="text/css">
+.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+}
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+<title>Memory Card Game (match pair) in R</title>
+</head>
+
+<body>
+
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">### Memory Card Game (match pair) in R</span>
+
+<span class="hl com">### function to set up the game</span>
+<span class="hl std">set.game.4by4</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">() {</span>
+  <span class="hl std">game.open</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl kwd">sample</span><span class="hl std">(</span><span class="hl kwd">c</span><span class="hl std">(LETTERS[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">8</span><span class="hl std">], LETTERS[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">8</span><span class="hl std">])),</span> <span class="hl num">4</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">)</span>
+  <span class="hl std">game.hidden</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">16</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">,)</span>
+  <span class="hl std">game.list</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">list</span><span class="hl std">(game.open, game.hidden)</span>
+  <span class="hl kwd">names</span><span class="hl std">(game.list)</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;open&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;hidden&quot;</span><span class="hl std">)</span>
+  <span class="hl kwd">print</span><span class="hl std">(game.hidden)</span>
+  <span class="hl kwd">invisible</span><span class="hl std">(game.list)</span>
+<span class="hl std">}</span>
+
+<span class="hl com">### Function for selecting cards</span>
+<span class="hl std">select.cards</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">game</span><span class="hl std">,</span> <span class="hl kwc">card.1</span><span class="hl std">,</span> <span class="hl kwc">card.2</span><span class="hl std">) {</span>
+  <span class="hl kwa">if</span><span class="hl std">(card.1</span> <span class="hl opt">==</span> <span class="hl std">card.2) {</span><span class="hl kwd">stop</span><span class="hl std">(</span><span class="hl str">&quot;Please choose different cards!&quot;</span><span class="hl std">)}</span>
+  <span class="hl kwa">if</span><span class="hl std">(card.1</span> <span class="hl opt">&gt;</span> <span class="hl kwd">length</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]])) {</span><span class="hl kwd">stop</span><span class="hl std">(</span><span class="hl str">&quot;Please choose different cards!&quot;</span><span class="hl std">)}</span>
+  <span class="hl kwa">if</span><span class="hl std">(card.2</span> <span class="hl opt">&gt;</span> <span class="hl kwd">length</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]])) {</span><span class="hl kwd">stop</span><span class="hl std">(</span><span class="hl str">&quot;Please choose different cards!&quot;</span><span class="hl std">)}</span>
+  <span class="hl kwa">if</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][card.1]</span> <span class="hl opt">==</span> <span class="hl str">&quot;solved&quot;</span><span class="hl std">) {</span><span class="hl kwd">stop</span><span class="hl std">(</span><span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;Card&quot;</span><span class="hl std">, card.1,</span> <span class="hl str">&quot;has already been solved. Please choose another card!!&quot;</span><span class="hl std">))}</span>
+  <span class="hl kwa">if</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][card.2]</span> <span class="hl opt">==</span> <span class="hl str">&quot;solved&quot;</span><span class="hl std">) {</span><span class="hl kwd">stop</span><span class="hl std">(</span><span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;Card&quot;</span><span class="hl std">, card.2,</span> <span class="hl str">&quot;has already been solved. Please choose another card!!&quot;</span><span class="hl std">))}</span>
+  <span class="hl std">show.game</span> <span class="hl kwb">&lt;-</span> <span class="hl std">game[[</span><span class="hl str">&quot;hidden&quot;</span><span class="hl std">]]</span>
+  <span class="hl std">show.game[</span><span class="hl kwd">c</span><span class="hl std">(card.1, card.2)]</span> <span class="hl kwb">&lt;-</span> <span class="hl std">game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][</span><span class="hl kwd">c</span><span class="hl std">(card.1, card.2)]</span>
+  <span class="hl std">solve.game</span> <span class="hl kwb">&lt;-</span> <span class="hl std">game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]]</span>
+  <span class="hl std">solve.game[</span><span class="hl kwd">c</span><span class="hl std">(card.1, card.2)]</span> <span class="hl kwb">&lt;-</span> <span class="hl str">&quot;solved&quot;</span>
+  <span class="hl std">solve.game.hidden</span> <span class="hl kwb">&lt;-</span> <span class="hl std">game[[</span><span class="hl str">&quot;hidden&quot;</span><span class="hl std">]]</span>
+  <span class="hl std">solve.game.hidden[</span><span class="hl kwd">c</span><span class="hl std">(card.1, card.2)]</span> <span class="hl kwb">&lt;-</span> <span class="hl str">&quot;solved&quot;</span>
+  <span class="hl kwa">if</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][card.1]</span> <span class="hl opt">==</span> <span class="hl std">game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][card.2]) {game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]]</span> <span class="hl kwb">&lt;-</span> <span class="hl std">solve.game}</span>
+  <span class="hl kwa">if</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][card.1]</span> <span class="hl opt">==</span> <span class="hl std">game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][card.2]) {game[[</span><span class="hl str">&quot;hidden&quot;</span><span class="hl std">]]</span> <span class="hl kwb">&lt;-</span> <span class="hl std">solve.game.hidden}</span>
+  <span class="hl kwd">print</span><span class="hl std">(show.game)</span>
+  <span class="hl kwa">if</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][</span><span class="hl kwd">c</span><span class="hl std">(card.1)]</span> <span class="hl opt">==</span> <span class="hl std">game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][</span><span class="hl kwd">c</span><span class="hl std">(card.2)]) {</span><span class="hl kwd">print</span><span class="hl std">(</span><span class="hl str">&quot;It's a match!&quot;</span><span class="hl std">)}</span>
+  <span class="hl kwa">if</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][</span><span class="hl kwd">c</span><span class="hl std">(card.1)]</span> <span class="hl opt">!=</span> <span class="hl std">game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][</span><span class="hl kwd">c</span><span class="hl std">(card.2)]) {</span><span class="hl kwd">print</span><span class="hl std">(</span><span class="hl str">&quot;No match!&quot;</span><span class="hl std">)}</span>
+  <span class="hl kwa">if</span><span class="hl std">(</span><span class="hl kwd">all</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]]</span> <span class="hl opt">==</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl str">&quot;solved&quot;</span><span class="hl std">,</span> <span class="hl kwd">length</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]])))) {</span><span class="hl kwd">print</span><span class="hl std">(</span><span class="hl str">&quot;You win!&quot;</span><span class="hl std">)}</span>
+  <span class="hl kwd">invisible</span><span class="hl std">(game)</span>
+<span class="hl std">}</span>
+
+<span class="hl com">### Set up the game</span>
+<span class="hl kwd">set.seed</span><span class="hl std">(</span><span class="hl num">1988</span><span class="hl std">)</span>
+<span class="hl std">game1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">set.game.4by4</span><span class="hl std">()</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##      [,1] [,2] [,3] [,4]
+## [1,]    1    5    9   13
+## [2,]    2    6   10   14
+## [3,]    3    7   11   15
+## [4,]    4    8   12   16
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">### Show cards</span>
+<span class="hl std">game1</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## $open
+##      [,1] [,2] [,3] [,4]
+## [1,] &quot;B&quot;  &quot;F&quot;  &quot;A&quot;  &quot;A&quot; 
+## [2,] &quot;B&quot;  &quot;F&quot;  &quot;G&quot;  &quot;G&quot; 
+## [3,] &quot;H&quot;  &quot;E&quot;  &quot;D&quot;  &quot;C&quot; 
+## [4,] &quot;C&quot;  &quot;D&quot;  &quot;H&quot;  &quot;E&quot; 
+## 
+## $hidden
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    5    9   13
+## [2,]    2    6   10   14
+## [3,]    3    7   11   15
+## [4,]    4    8   12   16
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">### Play the game</span>
+<span class="hl std">game1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">select.cards</span><span class="hl std">(game1,</span> <span class="hl num">3</span><span class="hl std">,</span> <span class="hl num">9</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##      [,1] [,2] [,3] [,4]
+## [1,] &quot;1&quot;  &quot;5&quot;  &quot;A&quot;  &quot;13&quot;
+## [2,] &quot;2&quot;  &quot;6&quot;  &quot;10&quot; &quot;14&quot;
+## [3,] &quot;H&quot;  &quot;7&quot;  &quot;11&quot; &quot;15&quot;
+## [4,] &quot;4&quot;  &quot;8&quot;  &quot;12&quot; &quot;16&quot;
+## [1] &quot;No match!&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">game1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">select.cards</span><span class="hl std">(game1,</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##      [,1] [,2] [,3] [,4]
+## [1,] &quot;B&quot;  &quot;5&quot;  &quot;9&quot;  &quot;13&quot;
+## [2,] &quot;B&quot;  &quot;6&quot;  &quot;10&quot; &quot;14&quot;
+## [3,] &quot;3&quot;  &quot;7&quot;  &quot;11&quot; &quot;15&quot;
+## [4,] &quot;4&quot;  &quot;8&quot;  &quot;12&quot; &quot;16&quot;
+## [1] &quot;It's a match!&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">game1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">select.cards</span><span class="hl std">(game1,</span> <span class="hl num">3</span><span class="hl std">,</span> <span class="hl num">12</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##      [,1]     [,2] [,3] [,4]
+## [1,] &quot;solved&quot; &quot;5&quot;  &quot;9&quot;  &quot;13&quot;
+## [2,] &quot;solved&quot; &quot;6&quot;  &quot;10&quot; &quot;14&quot;
+## [3,] &quot;H&quot;      &quot;7&quot;  &quot;11&quot; &quot;15&quot;
+## [4,] &quot;4&quot;      &quot;8&quot;  &quot;H&quot;  &quot;16&quot;
+## [1] &quot;It's a match!&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">game1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">select.cards</span><span class="hl std">(game1,</span> <span class="hl num">4</span><span class="hl std">,</span> <span class="hl num">15</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##      [,1]     [,2] [,3]     [,4]
+## [1,] &quot;solved&quot; &quot;5&quot;  &quot;9&quot;      &quot;13&quot;
+## [2,] &quot;solved&quot; &quot;6&quot;  &quot;10&quot;     &quot;14&quot;
+## [3,] &quot;solved&quot; &quot;7&quot;  &quot;11&quot;     &quot;C&quot; 
+## [4,] &quot;C&quot;      &quot;8&quot;  &quot;solved&quot; &quot;16&quot;
+## [1] &quot;It's a match!&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">game1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">select.cards</span><span class="hl std">(game1,</span> <span class="hl num">5</span><span class="hl std">,</span> <span class="hl num">6</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##      [,1]     [,2] [,3]     [,4]    
+## [1,] &quot;solved&quot; &quot;F&quot;  &quot;9&quot;      &quot;13&quot;    
+## [2,] &quot;solved&quot; &quot;F&quot;  &quot;10&quot;     &quot;14&quot;    
+## [3,] &quot;solved&quot; &quot;7&quot;  &quot;11&quot;     &quot;solved&quot;
+## [4,] &quot;solved&quot; &quot;8&quot;  &quot;solved&quot; &quot;16&quot;    
+## [1] &quot;It's a match!&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">game1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">select.cards</span><span class="hl std">(game1,</span> <span class="hl num">7</span><span class="hl std">,</span> <span class="hl num">16</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##      [,1]     [,2]     [,3]     [,4]    
+## [1,] &quot;solved&quot; &quot;solved&quot; &quot;9&quot;      &quot;13&quot;    
+## [2,] &quot;solved&quot; &quot;solved&quot; &quot;10&quot;     &quot;14&quot;    
+## [3,] &quot;solved&quot; &quot;E&quot;      &quot;11&quot;     &quot;solved&quot;
+## [4,] &quot;solved&quot; &quot;8&quot;      &quot;solved&quot; &quot;E&quot;     
+## [1] &quot;It's a match!&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">game1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">select.cards</span><span class="hl std">(game1,</span> <span class="hl num">8</span><span class="hl std">,</span> <span class="hl num">11</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##      [,1]     [,2]     [,3]     [,4]    
+## [1,] &quot;solved&quot; &quot;solved&quot; &quot;9&quot;      &quot;13&quot;    
+## [2,] &quot;solved&quot; &quot;solved&quot; &quot;10&quot;     &quot;14&quot;    
+## [3,] &quot;solved&quot; &quot;solved&quot; &quot;D&quot;      &quot;solved&quot;
+## [4,] &quot;solved&quot; &quot;D&quot;      &quot;solved&quot; &quot;solved&quot;
+## [1] &quot;It's a match!&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">game1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">select.cards</span><span class="hl std">(game1,</span> <span class="hl num">9</span><span class="hl std">,</span> <span class="hl num">13</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##      [,1]     [,2]     [,3]     [,4]    
+## [1,] &quot;solved&quot; &quot;solved&quot; &quot;A&quot;      &quot;A&quot;     
+## [2,] &quot;solved&quot; &quot;solved&quot; &quot;10&quot;     &quot;14&quot;    
+## [3,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## [4,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## [1] &quot;It's a match!&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">game1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">select.cards</span><span class="hl std">(game1,</span> <span class="hl num">10</span><span class="hl std">,</span> <span class="hl num">14</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##      [,1]     [,2]     [,3]     [,4]    
+## [1,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## [2,] &quot;solved&quot; &quot;solved&quot; &quot;G&quot;      &quot;G&quot;     
+## [3,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## [4,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## [1] &quot;It's a match!&quot;
+## [1] &quot;You win!&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">game1</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## $open
+##      [,1]     [,2]     [,3]     [,4]    
+## [1,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## [2,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## [3,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## [4,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## 
+## $hidden
+##      [,1]     [,2]     [,3]     [,4]    
+## [1,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## [2,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## [3,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## [4,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+</pre></div>
+</div></div>
+
+</body>
+</html>
