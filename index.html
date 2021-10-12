@@ -74,8 +74,11 @@
 <span class="hl std">set.game.4by4</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">() {</span>
   <span class="hl std">game.open</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl kwd">sample</span><span class="hl std">(</span><span class="hl kwd">c</span><span class="hl std">(LETTERS[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">8</span><span class="hl std">], LETTERS[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">8</span><span class="hl std">])),</span> <span class="hl num">4</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">)</span>
   <span class="hl std">game.hidden</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">16</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">,)</span>
-  <span class="hl std">game.list</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">list</span><span class="hl std">(game.open, game.hidden)</span>
-  <span class="hl kwd">names</span><span class="hl std">(game.list)</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;open&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;hidden&quot;</span><span class="hl std">)</span>
+  <span class="hl std">n.moves</span> <span class="hl kwb">&lt;-</span> <span class="hl num">0</span>
+  <span class="hl std">solving.time1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">NULL</span>
+  <span class="hl std">solving.time2</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">NULL</span>
+  <span class="hl std">game.list</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">list</span><span class="hl std">(game.open, game.hidden, n.moves, solving.time1, solving.time2)</span>
+  <span class="hl kwd">names</span><span class="hl std">(game.list)</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;open&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;hidden&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;moves&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;time1&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;time2&quot;</span><span class="hl std">)</span>
   <span class="hl kwd">print</span><span class="hl std">(game.hidden)</span>
   <span class="hl kwd">invisible</span><span class="hl std">(game.list)</span>
 <span class="hl std">}</span>
@@ -93,12 +96,17 @@
   <span class="hl std">solve.game[</span><span class="hl kwd">c</span><span class="hl std">(card.1, card.2)]</span> <span class="hl kwb">&lt;-</span> <span class="hl str">&quot;solved&quot;</span>
   <span class="hl std">solve.game.hidden</span> <span class="hl kwb">&lt;-</span> <span class="hl std">game[[</span><span class="hl str">&quot;hidden&quot;</span><span class="hl std">]]</span>
   <span class="hl std">solve.game.hidden[</span><span class="hl kwd">c</span><span class="hl std">(card.1, card.2)]</span> <span class="hl kwb">&lt;-</span> <span class="hl str">&quot;solved&quot;</span>
+  <span class="hl kwd">print</span><span class="hl std">(show.game)</span>
+  <span class="hl kwa">if</span><span class="hl std">(</span><span class="hl kwd">is.null</span><span class="hl std">(game[[</span><span class="hl str">&quot;time1&quot;</span><span class="hl std">]])) {game[[</span><span class="hl str">&quot;time1&quot;</span><span class="hl std">]]</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">Sys.time</span><span class="hl std">()}</span>
+  <span class="hl std">game[[</span><span class="hl str">&quot;time2&quot;</span><span class="hl std">]]</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">Sys.time</span><span class="hl std">()</span> <span class="hl opt">-</span> <span class="hl std">game[[</span><span class="hl str">&quot;time1&quot;</span><span class="hl std">]]</span>
   <span class="hl kwa">if</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][card.1]</span> <span class="hl opt">==</span> <span class="hl std">game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][card.2]) {game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]]</span> <span class="hl kwb">&lt;-</span> <span class="hl std">solve.game}</span>
   <span class="hl kwa">if</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][card.1]</span> <span class="hl opt">==</span> <span class="hl std">game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][card.2]) {game[[</span><span class="hl str">&quot;hidden&quot;</span><span class="hl std">]]</span> <span class="hl kwb">&lt;-</span> <span class="hl std">solve.game.hidden}</span>
-  <span class="hl kwd">print</span><span class="hl std">(show.game)</span>
   <span class="hl kwa">if</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][</span><span class="hl kwd">c</span><span class="hl std">(card.1)]</span> <span class="hl opt">==</span> <span class="hl std">game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][</span><span class="hl kwd">c</span><span class="hl std">(card.2)]) {</span><span class="hl kwd">print</span><span class="hl std">(</span><span class="hl str">&quot;It's a match!&quot;</span><span class="hl std">)}</span>
   <span class="hl kwa">if</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][</span><span class="hl kwd">c</span><span class="hl std">(card.1)]</span> <span class="hl opt">!=</span> <span class="hl std">game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]][</span><span class="hl kwd">c</span><span class="hl std">(card.2)]) {</span><span class="hl kwd">print</span><span class="hl std">(</span><span class="hl str">&quot;No match!&quot;</span><span class="hl std">)}</span>
   <span class="hl kwa">if</span><span class="hl std">(</span><span class="hl kwd">all</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]]</span> <span class="hl opt">==</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl str">&quot;solved&quot;</span><span class="hl std">,</span> <span class="hl kwd">length</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]])))) {</span><span class="hl kwd">print</span><span class="hl std">(</span><span class="hl str">&quot;You win!&quot;</span><span class="hl std">)}</span>
+  <span class="hl std">game[[</span><span class="hl str">&quot;moves&quot;</span><span class="hl std">]]</span> <span class="hl kwb">&lt;-</span> <span class="hl std">game[[</span><span class="hl str">&quot;moves&quot;</span><span class="hl std">]]</span> <span class="hl opt">+</span> <span class="hl num">1</span>
+  <span class="hl kwa">if</span><span class="hl std">(</span><span class="hl kwd">all</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]]</span> <span class="hl opt">==</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl str">&quot;solved&quot;</span><span class="hl std">,</span> <span class="hl kwd">length</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]])))) {</span><span class="hl kwd">print</span><span class="hl std">(</span><span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;Moves: &quot;</span><span class="hl std">, game[[</span><span class="hl str">&quot;moves&quot;</span><span class="hl std">]]))}</span>
+  <span class="hl kwa">if</span><span class="hl std">(</span><span class="hl kwd">all</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]]</span> <span class="hl opt">==</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl str">&quot;solved&quot;</span><span class="hl std">,</span> <span class="hl kwd">length</span><span class="hl std">(game[[</span><span class="hl str">&quot;open&quot;</span><span class="hl std">]])))) {</span><span class="hl kwd">print</span><span class="hl std">(</span><span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;Time: &quot;</span><span class="hl std">, game[[</span><span class="hl str">&quot;time2&quot;</span><span class="hl std">]]))}</span>
   <span class="hl kwd">invisible</span><span class="hl std">(game)</span>
 <span class="hl std">}</span>
 
@@ -128,6 +136,15 @@
 ## [2,]    2    6   10   14
 ## [3,]    3    7   11   15
 ## [4,]    4    8   12   16
+## 
+## $moves
+## [1] 0
+## 
+## $time1
+## NULL
+## 
+## $time2
+## NULL
 </pre></div>
 <div class="source"><pre class="knitr r"><span class="hl com">### Play the game</span>
 <span class="hl std">game1</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">select.cards</span><span class="hl std">(game1,</span> <span class="hl num">3</span><span class="hl std">,</span> <span class="hl num">9</span><span class="hl std">)</span>
@@ -211,6 +228,8 @@
 ## [4,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
 ## [1] &quot;It's a match!&quot;
 ## [1] &quot;You win!&quot;
+## [1] &quot;Moves:  9&quot;
+## [1] &quot;Time:  0.0102999210357666&quot;
 </pre></div>
 <div class="source"><pre class="knitr r"><span class="hl std">game1</span>
 </pre></div>
@@ -227,6 +246,15 @@
 ## [2,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
 ## [3,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
 ## [4,] &quot;solved&quot; &quot;solved&quot; &quot;solved&quot; &quot;solved&quot;
+## 
+## $moves
+## [1] 9
+## 
+## $time1
+## [1] &quot;2021-10-12 14:29:42 CEST&quot;
+## 
+## $time2
+## Time difference of 0.01029992 secs
 </pre></div>
 </div></div>
 
